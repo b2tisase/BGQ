@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bitew Grammar Quest - Suite Edition</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --beginner: #2ecc71;
+            --intermediate: #f39c12;
+            --advanced: #9b59b6;
+            --correct: #27ae60;
+            --incorrect: #e74c3c;
+            --border-color: #e2e8f0;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 16px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1050px;
+            width: 100%;
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            text-align: center;
+            margin: 0 0 16px 0;
+            color: #34495e;
+            font-size: 1.7rem;
+        }
+
+        /* Top Navigation Tabs */
+        .main-nav {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 6px;
+            background: #eef2f5;
+            padding: 6px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+        }
+
+        .nav-btn {
+            padding: 11px 12px;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            color: #55697d;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover { color: #1e293b; }
+        .nav-btn.active {
+            background: #ffffff;
+            color: var(--primary);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+            color: #475569;
+        }
+
+        /* 16px minimum prevents iOS auto-zoom */
+        select, input[type="text"] {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 16px;
+            outline: none;
+            background: #ffffff;
+            min-height: 44px;
+        }
+
+        select:focus, input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        /* Tier Buttons */
+        .tier-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .tier-btn {
+            flex: 1;
+            border: none;
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.2s ease;
+            min-height: 44px;
+            font-size: 0.95rem;
+        }
+
+        .tier-btn.active {
+            opacity: 1;
+            transform: scale(1.02);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+
+        #btn-beginner { background-color: var(--beginner); }
+        #btn-intermediate { background-color: var(--intermediate); }
+        #btn-advanced { background-color: var(--advanced); }
+
+        /* Status Bar */
+        .game-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1e293b;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .player-score.active-turn {
+            background: var(--primary);
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        #timer-display {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        /* Quest Box with Responsive Multi-Blank Flow */
+        .quest-box {
+            font-size: 1.18rem;
+            line-height: 2.2;
+            margin-bottom: 20px;
+            min-height: 70px;
+        }
+
+        .blank-input {
+            font-size: 16px; /* Prevents auto zoom */
+            padding: 6px 10px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            width: 140px;
+            display: inline-block;
+            text-align: center;
+            outline: none;
+            margin: 2px 4px;
+            vertical-align: middle;
+            transition: all 0.2s ease;
+            background: #ffffff;
+        }
+
+        .blank-input:focus { border-color: var(--primary); }
+        .blank-input.correct { border-color: var(--correct); background: #f0fdf4; color: var(--correct); font-weight: bold; }
+        .blank-input.incorrect { border-color: var(--incorrect); background: #fef2f2; color: var(--incorrect); font-weight: bold; }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            min-height: 46px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s;
+        }
+
+        .action-btn:hover { opacity: 0.9; }
+        #submit-btn { background-color: var(--primary); flex: 1 1 160px; }
+        #hint-btn { background-color: #64748b; flex: 1 1 110px; }
+        #next-btn { background-color: #0f172a; flex: 1 1 160px; display: none; }
+
+        .hint-text {
+            margin-top: 15px;
+            padding: 12px;
+            background: #fffbeb;
+            border-left: 4px solid var(--intermediate);
+            border-radius: 6px;
+            display: none;
+            font-style: italic;
+            color: #92400e;
+            font-size: 0.95rem;
+        }
+
+        .feedback-message {
+            margin-top: 15px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            display: none;
+            line-height: 1.6;
+        }
+
+        /* Guide View (Verb Tenses) */
+        .tense-nav-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .tense-tab {
+            padding: 8px 12px;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #475569;
+            min-height: 40px;
+            font-size: 0.9rem;
+        }
+
+        .tense-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tense-card {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 14px;
+            background: #ffffff;
+        }
+
+        .tense-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tense-card-header h3 { margin: 0; color: #1e293b; font-size: 1.15rem; }
+        .formula-badge {
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .tense-card-body ul { padding-left: 20px; margin: 8px 0; }
+        .tense-card-body li { margin-bottom: 6px; font-size: 0.95rem; }
+
+        .example-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 14px;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .example-col span {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #64748b;
+        }
+
+        /* Irregular Verbs Hub */
+        .table-search-bar {
+            width: 100%;
+            margin-bottom: 14px;
+        }
+
+        .table-wrap {
+            width: 100%;
+            max-height: 520px;
+            overflow-y: auto;
+            overflow-x: auto; /* Clean horizontal swipe on mobile */
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 620px; /* Ensures columns stay legible on mobile without collapsing */
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px 8px;
+            font-size: 0.9rem;
+            word-break: break-word;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #334155;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        tr:hover { background-color: #f8fafc; }
+
+        .verb-link {
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .speak-cell-btn {
+            border: none;
+            background: #e2e8f0;
+            border-radius: 6px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            min-height: 36px;
+        }
+
+        /* Modal Dialog */
+        .modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            padding: 14px;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            max-width: 440px;
+            width: 100%;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 14px; right: 14px;
+            border: none;
+            background: transparent;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+            padding: 4px 8px;
+        }
+
+        /* Notes Study View */
+        .notes-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            background: #ffffff;
+        }
+
+        .notes-card-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .notes-card-sentence {
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .notes-card-rule {
+            font-size: 0.88rem;
+            color: #475569;
+            background: #fffbeb;
+            padding: 6px 12px;
+            border-left: 3px solid var(--intermediate);
+            border-radius: 4px;
+        }
+
+        /* MOBILE SPECIFIC MEDIA QUERY (Under 680px screens) */
+        @media (max-width: 680px) {
+            body { padding: 8px 4px; }
+            .container { padding: 16px 12px; border-radius: 10px; }
+            h1 { font-size: 1.45rem; }
+            
+            .main-nav {
+                grid-template-columns: 1fr 1fr;
+                gap: 4px;
+            }
+            .nav-btn { font-size: 0.85rem; padding: 8px 6px; }
+
+            .controls-panel { grid-template-columns: 1fr; gap: 10px; }
+            
+            .tier-buttons { flex-direction: column; gap: 6px; }
+            .tier-btn { width: 100%; }
+
+            .quest-box { font-size: 1.1rem; line-height: 2; }
+            .blank-input { width: 120px; font-size: 16px; }
+
+            .example-grid { grid-template-columns: 1fr; gap: 8px; }
+            
+            .game-status {
+                flex-direction: column;
+                gap: 6px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🏆 Bitew Grammar Quest</h1>
+
+    <!-- Top Navigation -->
+    <nav class="main-nav">
+        <button class="nav-btn active" onclick="switchView('quest')">🎮 Grammar Quest</button>
+        <button class="nav-btn" onclick="switchView('tenses')">📖 Verb Tenses Guide</button>
+        <button class="nav-btn" onclick="switchView('irregular')">⚡ Irregular Verbs Hub</button>
+        <button class="nav-btn" onclick="switchView('notes-bank')">📝 Notes Study Sheet</button>
+    </nav>
+
+    <!-- VIEW 1: GRAMMAR QUEST -->
+    <div id="view-quest" class="app-view">
+        <div class="controls-panel">
+            <div class="control-group">
+                <label for="topic-select">🎯 Theme / Topic:</label>
+                <select id="topic-select">
+                    <option value="any">All Topics Mixed</option>
+                    <option value="notes">📝 Handwritten Notes Bank (Adults)</option>
+                    <option value="travel">✈️ Travel & Adventure</option>
+                    <option value="food">🍕 Food & Cooking</option>
+                    <option value="sports">⚽ Sports & Fitness</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="mode-select">👥 Player Mode:</label>
+                <select id="mode-select">
+                    <option value="single">Single Player</option>
+                    <option value="multi">Two-Player Turn Pass</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="timer-mode-select">⏱️ Practice Timer:</label>
+                <select id="timer-mode-select">
+                    <option value="off" selected>🧘 Practice Mode (No Timer)</option>
+                    <option value="on">⚡ Challenge Mode (45s Timer)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="tier-buttons">
+            <button class="tier-btn" id="btn-beginner" onclick="setTier('beginner')">Beginner (Kids)</button>
+            <button class="tier-btn" id="btn-intermediate" onclick="setTier('intermediate')">Intermediate (Teens)</button>
+            <button class="tier-btn active" id="btn-advanced" onclick="setTier('advanced')">Advanced (Adults)</button>
+        </div>
+
+        <div class="game-status">
+            <div class="player-scores">
+                <div id="p1-score-card" class="player-score active-turn">Score: <span id="p1-score">0</span></div>
+                <div id="p2-score-card" class="player-score" style="display: none;">Player 2: <span id="p2-score">0</span></div>
+            </div>
+            <div id="timer-display">🧘 Practice Mode (Untimed)</div>
+        </div>
+
+        <div class="quest-box" id="quest-surface"></div>
+
+        <div class="action-buttons">
+            <button id="submit-btn" class="action-btn" onclick="checkAnswer()">Verify Answer [Enter]</button>
+            <button id="hint-btn" class="action-btn" onclick="showHint()">Get Hint</button>
+            <button id="next-btn" class="action-btn" onclick="nextQuestion()">Next Quest ➡️</button>
+        </div>
+
+        <div class="hint-text" id="hint-box"></div>
+        <div class="feedback-message" id="feedback-box"></div>
+    </div>
+
+    <!-- VIEW 2: COMPREHENSIVE TENSES GUIDE -->
+    <div id="view-tenses" class="app-view" style="display: none;">
+        <div class="tense-nav-tabs">
+            <button class="tense-tab active" onclick="renderTenseCategory('present')">Present Tenses</button>
+            <button class="tense-tab" onclick="renderTenseCategory('past')">Past Tenses</button>
+            <button class="tense-tab" onclick="renderTenseCategory('future')">Future Tenses</button>
+            <button class="tense-tab" onclick="renderTenseCategory('special')">Special Forms & Verbs</button>
+        </div>
+        <div id="tenses-card-container"></div>
+    </div>
+
+    <!-- VIEW 3: IRREGULAR VERBS HUB -->
+    <div id="view-irregular" class="app-view" style="display: none;">
+        <input 
+            type="text" 
+            id="verb-search-input" 
+            class="table-search-bar" 
+            placeholder="🔍 Search irregular verbs by base, past, or participle form..." 
+            onkeyup="searchVerbs()"
+        />
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Base Form</th>
+                        <th>Past Simple</th>
+                        <th>Past Participle</th>
+                        <th>3rd Person</th>
+                        <th>Participle/Gerund</th>
+                        <th>Audio</th>
+                    </tr>
+                </thead>
+                <tbody id="irregular-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- VIEW 4: DIRECT NOTES STUDY SHEET -->
+    <div id="view-notes-bank" class="app-view" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+            <h2 style="margin: 0; font-size: 1.25rem; color: #1e293b;">📝 Complete Handwritten Notes & Answer Key</h2>
+            <span style="font-size: 0.85rem; color: #475569; background: #eef2f5; padding: 4px 10px; border-radius: 6px; font-weight: 600;">Full Exercise Bank</span>
+        </div>
+        <input 
+            type="text" 
+            id="notes-search-input" 
+            class="table-search-bar" 
+            placeholder="🔍 Filter study notes by word, answer, or rule..." 
+            onkeyup="filterNotesStudySheet()"
+        />
+        <div id="notes-list-container"></div>
+    </div>
+</div>
+
+<!-- Modal Dialog for Irregular Verb Details -->
+<div id="verb-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card">
+        <button class="close-btn" onclick="closeVerbModal()">&times;</button>
+        <h2 id="modal-verb-name" style="margin-top:0; color:var(--primary);">Verb</h2>
+        <p><strong>Forms:</strong> <span id="modal-verb-forms"></span></p>
+        <p><strong>3rd Person Singular:</strong> <span id="modal-verb-third"></span></p>
+        <p><strong>Present Participle / Gerund:</strong> <span id="modal-verb-gerund"></span></p>
+        <div style="margin-top: 15px;">
+            <button class="action-btn" style="background: var(--primary); width: 100%;" onclick="speakModalVerb()">🔊 Pronounce Forms</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // -------------------------------------------------------------
+    // QUESTION DATABASE
+    // -------------------------------------------------------------
+    const questionsDatabase = {
+        beginner: {
+            travel: [
+                { text: "We pack our clothes inside a large [blank].", answers: ["suitcase"], hint: "A rectangular bag used for carrying travel items." },
+                { text: "The large silver plane flies high in the [blank].", answers: ["sky"], hint: "Look upward during the day to see this blue space." }
+            ],
+            food: [
+                { text: "An apple is a fruit, but a donut is a sweet [blank].", answers: ["treat"], hint: "A sugary snack." },
+                { text: "Please use a sharp [blank] to cut your dinner steak.", answers: ["knife"], hint: "A utensil paired with a fork." }
+            ],
+            sports: [
+                { text: "To score in soccer, kick the ball into the [blank].", answers: ["goal"], hint: "Guarded by the goalkeeper." },
+                { text: "Baseball players wear a leather [blank] to catch balls.", answers: ["glove"], hint: "Protective hand gear." }
+            ],
+            notes: []
+        },
+        intermediate: {
+            travel: [
+                { text: "If we had arrived later, our train [blank] already left.", answers: ["would have"], hint: "Past conditional verb phrase." },
+                { text: "She is very interested [blank] visiting ancient ruins.", answers: ["in"], hint: "Preposition linking with 'interested'." }
+            ],
+            food: [
+                { text: "Homemade lasagna tastes much [blank] than frozen meals.", answers: ["better"], hint: "Comparative form of 'good'." },
+                { text: "Before baking the bread, the baker [blank] the flour.", answers: ["weighed"], hint: "Past form of weigh." }
+            ],
+            sports: [
+                { text: "The runner trained hard, [blank] she missed the record.", answers: ["but"], hint: "Coordinating conjunction showing contrast." },
+                { text: "While athletes warmed up, the coach [blank] mapping strategy.", answers: ["was"], hint: "Past continuous singular helping verb." }
+            ],
+            notes: []
+        },
+        advanced: {
+            travel: [
+                { text: "Had they reviewed the criteria, they [blank] detained.", answers: ["would not have been"], hint: "Third conditional passive form." },
+                { text: "The explorer, [blank] journals detailed topography, vanished.", answers: ["whose"], hint: "Possessive relative pronoun." }
+            ],
+            food: [
+                { text: "The chef avoids [blank] synthetic preservatives.", answers: ["using"], hint: "Gerund required after 'avoid'." },
+                { text: "Scarcely had the restaurant opened [blank] critics arrived.", answers: ["when"], hint: "Inversion connector paired with 'scarcely'." }
+            ],
+            sports: [
+                { text: "The champion refused to succumb to competitive [blank].", answers: ["pressure"], hint: "Abstract noun for mental strain." },
+                { text: "The match was delayed, organizers [blank] anticipated storms.", answers: ["having"], hint: "Perfect participle indicating cause." }
+            ],
+            notes: [
+                {
+                    text: "When Yoko [blank] (move) to the US last year, she [blank] (not/know) much about the culture. But since then, she [blank] (learn) a lot.",
+                    answers: ["moved", "didn't know", "has learned"],
+                    hint: "1. Simple Past (last year) | 2. Simple Past negative | 3. Present Perfect (since then)"
+                },
+                {
+                    text: "Yesterday, when the phone [blank] (ring), she [blank] (turn down) the TV.",
+                    answers: ["rang", "turned down"],
+                    hint: "Short interrupting actions in the past after 'when' (Simple Past)."
+                },
+                {
+                    text: "My head hurts, I [blank] (study) for hours!",
+                    answers: ["have been studying"],
+                    hint: "Present Perfect Continuous showing ongoing duration up to now."
+                },
+                {
+                    text: "Mary is a teacher now. Before she [blank] (become) a teacher, she [blank] (work) as a waitress for a long time.",
+                    answers: ["became", "had worked"],
+                    hint: "1. Simple Past | 2. Past Perfect (action completed before becoming a teacher)."
+                },
+                {
+                    text: "Tomorrow is Frank's party. By the time the party [blank] (begin), I [blank] (buy) a new dress.",
+                    answers: ["begins", "will have bought"],
+                    hint: "1. Simple Present in time clause | 2. Future Perfect (completed before party starts)."
+                },
+                {
+                    text: "Listen! Did you hear the noise? I [blank] (think) someone [blank] (try) to get in the house.",
+                    answers: ["think", "is trying"],
+                    hint: "1. Non-continuous verb | 2. Present Continuous (action in progress right now)."
+                },
+                {
+                    text: "I [blank] (call/not) you back last night when I got home because I [blank] (know) you [blank] (sleep).",
+                    answers: ["didn't call", "knew", "were sleeping"],
+                    hint: "1. Past negative | 2. Past state | 3. Past Continuous for action in progress."
+                },
+                {
+                    text: "Guess what! We [blank] (buy) a new house!!! We are so excited.",
+                    answers: ["are buying"],
+                    hint: "Present Continuous used for immediate/definite near-future plan."
+                },
+                {
+                    text: "By 9 o'clock last night, I [blank] (work) for hours on my English paper.",
+                    answers: ["had been working"],
+                    hint: "Past Perfect Continuous for duration continuing up to a past cutoff."
+                },
+                {
+                    text: "I [blank] (visit) Hawaii. In fact I [blank] (travel) to Hawaii three months ago.",
+                    answers: ["have visited", "traveled"],
+                    hint: "1. Present Perfect (unspecified experience) | 2. Simple Past (three months ago)."
+                },
+                {
+                    text: "A flower [blank] (bloom) in spring, but a tree [blank] (develop) these great colors in the fall.",
+                    answers: ["blooms", "develops"],
+                    hint: "General seasonal facts (Simple Present, 3rd person singular)."
+                },
+                {
+                    text: "Claudia usually only [blank] (write) to her parents once a month. She [blank] (not/write) for three weeks, but today [blank] (do) it because she wants money.",
+                    answers: ["writes", "hasn't written", "is doing"],
+                    hint: "1. Habitual routine | 2. Duration up to now | 3. Temporary activity today."
+                },
+                {
+                    text: "Tomorrow after I [blank] (drop) you off at school, I [blank] (make) a reservation. If you [blank] (finish) school early, I [blank] (pick) you up.",
+                    answers: ["drop", "am going to make", "finish", "will pick"],
+                    hint: "Time clauses take Simple Present; main future clauses use 'going to' or 'will'."
+                },
+                {
+                    text: "Steven [blank] (like) his math class a lot. The teacher always [blank] (explain) things very clearly. This week the class [blank] (work) on fractions.",
+                    answers: ["likes", "explains", "is working"],
+                    hint: "1. Abstract state | 2. Habit with 'always' | 3. Temporary action this week."
+                },
+                {
+                    text: "It was Riche's first day of class. When he [blank] (open) the door, he [blank] (see) several people. Some of them [blank] (read), some of them [blank] (talk) to each other, but nobody [blank] (pay) attention.",
+                    answers: ["opened", "saw", "were reading", "were talking", "was paying"],
+                    hint: "Atmosphere in the past: Simple past for actions, Past Continuous for scene backdrop."
+                },
+                {
+                    text: "The teacher isn't here yet. So far we [blank] (wait) for her for 10 minutes, but she still [blank] (arrive/not).",
+                    answers: ["have waited", "hasn't arrived"],
+                    hint: "Present Perfect used with 'so far' and 'yet/still'."
+                },
+                {
+                    text: "I [blank] (not/go) to many parties since I [blank] (arrive) in the United States last April.",
+                    answers: ["haven't gone", "arrived"],
+                    hint: "Present Perfect in main clause; Simple Past after 'since'."
+                },
+                {
+                    text: "Right now it is 4:00. Rosa [blank] (work) on her paper. She [blank] (work) on it since 8:00 this morning. At 12:00 she [blank] (eat) lunch.",
+                    answers: ["is working", "has been working", "ate"],
+                    hint: "1. Right now | 2. Duration starting in morning | 3. Past completed action at 12:00."
+                },
+                {
+                    text: "Amy and her husband [blank] (watch) TV last night when suddenly they [blank] (hear) a loud crash. Outside, a truck [blank] (back) into their car.",
+                    answers: ["were watching", "heard", "had backed"],
+                    hint: "1. Ongoing past action | 2. Sudden interruption | 3. Past Perfect (prior event)."
+                },
+                {
+                    text: "I [blank] (work) as a teacher, but currently I [blank] (work) at the post office. I [blank] (get) up every morning at 6 and [blank] (drive) to work.",
+                    answers: ["work", "am working", "get", "drive"],
+                    hint: "Regular occupation vs. temporary current job, followed by habitual routine."
+                },
+                {
+                    text: "Be careful! That box you [blank] (carry) is heavy. Every day my sister [blank] (call) my mother, but today she [blank] (travel), so she can't call.",
+                    answers: ["are carrying", "calls", "is traveling"],
+                    hint: "1. Action happening now | 2. Daily habit | 3. Temporary continuous state today."
+                },
+                {
+                    text: "We [blank] (live) here for seven years. We [blank] (leave) Iran in 1994.",
+                    answers: ["have lived", "left"],
+                    hint: "1. Duration continuing until now | 2. Completed past event with a specific year."
+                }
+            ]
+        }
+    };
+
+    // -------------------------------------------------------------
+    // IRREGULAR VERBS DATASET
+    // -------------------------------------------------------------
+    const irregularVerbsData = [
+        { base: "Abide", past: "Abode/Abided", participle: "Abode/Abided/Abidden", third: "Abides", gerund: "Abiding" },
+        { base: "Alight", past: "Alit/Alighted", participle: "Alit/Alighted", third: "Alights", gerund: "Alighting" },
+        { base: "Arise", past: "Arose", participle: "Arisen", third: "Arises", gerund: "Arising" },
+        { base: "Awake", past: "Awoke", participle: "Awoken", third: "Awakes", gerund: "Awaking" },
+        { base: "Be", past: "Was/Were", participle: "Been", third: "Is", gerund: "Being" },
+        { base: "Bear", past: "Bore", participle: "Born/Borne", third: "Bears", gerund: "Bearing" },
+        { base: "Beat", past: "Beat", participle: "Beaten", third: "Beats", gerund: "Beating" },
+        { base: "Become", past: "Became", participle: "Become", third: "Becomes", gerund: "Becoming" },
+        { base: "Begin", past: "Began", participle: "Begun", third: "Begins", gerund: "Beginning" },
+        { base: "Behold", past: "Beheld", participle: "Beheld", third: "Beholds", gerund: "Beholding" },
+        { base: "Bend", past: "Bent", participle: "Bent", third: "Bends", gerund: "Bending" },
+        { base: "Bet", past: "Bet", participle: "Bet", third: "Bets", gerund: "Betting" },
+        { base: "Bid", past: "Bade", participle: "Bidden", third: "Bids", gerund: "Bidding" },
+        { base: "Bid", past: "Bid", participle: "Bid", third: "Bids", gerund: "Bidding" },
+        { base: "Bind", past: "Bound", participle: "Bound", third: "Binds", gerund: "Binding" },
+        { base: "Bite", past: "Bit", participle: "Bitten", third: "Bites", gerund: "Biting" },
+        { base: "Bleed", past: "Bled", participle: "Bled", third: "Bleeds", gerund: "Bleeding" },
+        { base: "Blow", past: "Blew", participle: "Blown", third: "Blows", gerund: "Blowing" },
+        { base: "Break", past: "Broke", participle: "Broken", third: "Breaks", gerund: "Breaking" },
+        { base: "Breed", past: "Bred", participle: "Bred", third: "Breeds", gerund: "Breeding" },
+        { base: "Bring", past: "Brought", participle: "Brought", third: "Brings", gerund: "Bringing" },
+        { base: "Broadcast", past: "Broadcast/Broadcasted", participle: "Broadcast/Broadcasted", third: "Broadcasts", gerund: "Broadcasting" },
+        { base: "Build", past: "Built", participle: "Built", third: "Builds", gerund: "Building" },
+        { base: "Burn", past: "Burnt/Burned", participle: "Burnt/Burned", third: "Burns", gerund: "Burning" },
+        { base: "Burst", past: "Burst", participle: "Burst", third: "Bursts", gerund: "Bursting" },
+        { base: "Bust", past: "Bust", participle: "Bust", third: "Busts", gerund: "Busting" },
+        { base: "Buy", past: "Bought", participle: "Bought", third: "Buys", gerund: "Buying" },
+        { base: "Cast", past: "Cast", participle: "Cast", third: "Casts", gerund: "Casting" },
+        { base: "Catch", past: "Caught", participle: "Caught", third: "Catches", gerund: "Catching" },
+        { base: "Choose", past: "Chose", participle: "Chosen", third: "Chooses", gerund: "Choosing" },
+        { base: "Clap", past: "Clapped/Clapt", participle: "Clapped/Clapt", third: "Claps", gerund: "Clapping" },
+        { base: "Cling", past: "Clung", participle: "Clung", third: "Clings", gerund: "Clinging" },
+        { base: "Clothe", past: "Clad/Clothed", participle: "Clad/Clothed", third: "Clothes", gerund: "Clothing" },
+        { base: "Come", past: "Came", participle: "Come", third: "Comes", gerund: "Coming" },
+        { base: "Cost", past: "Cost", participle: "Cost", third: "Costs", gerund: "Costing" },
+        { base: "Creep", past: "Crept", participle: "Crept", third: "Creeps", gerund: "Creeping" },
+        { base: "Cut", past: "Cut", participle: "Cut", third: "Cuts", gerund: "Cutting" },
+        { base: "Dare", past: "Dared/Durst", participle: "Dared", third: "Dares", gerund: "Daring" },
+        { base: "Deal", past: "Dealt", participle: "Dealt", third: "Deals", gerund: "Dealing" },
+        { base: "Dig", past: "Dug", participle: "Dug", third: "Digs", gerund: "Digging" },
+        { base: "Dive", past: "Dived/Dove", participle: "Dived", third: "Dives", gerund: "Diving" },
+        { base: "Do", past: "Did", participle: "Done", third: "Does", gerund: "Doing" },
+        { base: "Draw", past: "Drew", participle: "Drawn", third: "Draws", gerund: "Drawing" },
+        { base: "Dream", past: "Dreamt/Dreamed", participle: "Dreamt/Dreamed", third: "Dreams", gerund: "Dreaming" },
+        { base: "Drink", past: "Drank", participle: "Drunk", third: "Drinks", gerund: "Drinking" },
+        { base: "Drive", past: "Drove", participle: "Driven", third: "Drives", gerund: "Driving" },
+        { base: "Dwell", past: "Dwelt", participle: "Dwelt", third: "Dwells", gerund: "Dwelling" },
+        { base: "Eat", past: "Ate", participle: "Eaten", third: "Eats", gerund: "Eating" },
+        { base: "Fall", past: "Fell", participle: "Fallen", third: "Falls", gerund: "Falling" },
+        { base: "Feed", past: "Fed", participle: "Fed", third: "Feeds", gerund: "Feeding" },
+        { base: "Feel", past: "Felt", participle: "Felt", third: "Feels", gerund: "Feeling" },
+        { base: "Fight", past: "Fought", participle: "Fought", third: "Fights", gerund: "Fighting" },
+        { base: "Find", past: "Found", participle: "Found", third: "Finds", gerund: "Finding" },
+        { base: "Fit", past: "Fit/Fitted", participle: "Fit/Fitted", third: "Fits", gerund: "Fitting" },
+        { base: "Flee", past: "Fled", participle: "Fled", third: "Flees", gerund: "Fleeing" },
+        { base: "Fling", past: "Flung", participle: "Flung", third: "Flings", gerund: "Flinging" },
+        { base: "Fly", past: "Flew", participle: "Flown", third: "Flies", gerund: "Flying" },
+        { base: "Forbid", past: "Forbade/Forbad", participle: "Forbidden", third: "Forbids", gerund: "Forbidding" },
+        { base: "Forecast", past: "Forecast/Forecasted", participle: "Forecast/Forecasted", third: "Forecasts", gerund: "Forecasting" },
+        { base: "Foresee", past: "Foresaw", participle: "Foreseen", third: "Foresees", gerund: "Foreseeing" },
+        { base: "Foretell", past: "Foretold", participle: "Foretold", third: "Foretells", gerund: "Foretelling" },
+        { base: "Forget", past: "Forgot", participle: "Forgotten", third: "Forgets", gerund: "Forgetting" },
+        { base: "Forgive", past: "Forgave", participle: "Forgiven", third: "Forgives", gerund: "Forgiving" },
+        { base: "Forsake", past: "Forsook", participle: "Forsaken", third: "Forsakes", gerund: "Forsaking" },
+        { base: "Freeze", past: "Froze", participle: "Frozen", third: "Freezes", gerund: "Freezing" },
+        { base: "Frostbite", past: "Frostbit", participle: "Frostbitten", third: "Frostbites", gerund: "Frostbiting" },
+        { base: "Get", past: "Got", participle: "Got/Gotten", third: "Gets", gerund: "Getting" },
+        { base: "Give", past: "Gave", participle: "Given", third: "Gives", gerund: "Giving" },
+        { base: "Go", past: "Went", participle: "Gone/Been", third: "Goes", gerund: "Going" },
+        { base: "Grind", past: "Ground", participle: "Ground", third: "Grinds", gerund: "Grinding" },
+        { base: "Grow", past: "Grew", participle: "Grown", third: "Grows", gerund: "Growing" },
+        { base: "Handwrite", past: "Handwrote", participle: "Handwritten", third: "Handwrites", gerund: "Handwriting" },
+        { base: "Hang", past: "Hung/Hanged", participle: "Hung/Hanged", third: "Hangs", gerund: "Hanging" },
+        { base: "Have", past: "Had", participle: "Had", third: "Has", gerund: "Having" },
+        { base: "Hear", past: "Heard", participle: "Heard", third: "Hears", gerund: "Hearing" },
+        { base: "Hide", past: "Hid", participle: "Hidden", third: "Hides", gerund: "Hiding" },
+        { base: "Hit", past: "Hit", participle: "Hit", third: "Hits", gerund: "Hitting" },
+        { base: "Hold", past: "Held", participle: "Held", third: "Holds", gerund: "Holding" },
+        { base: "Hurt", past: "Hurt", participle: "Hurt", third: "Hurts", gerund: "Hurting" },
+        { base: "Inlay", past: "Inlaid", participle: "Inlaid", third: "Inlays", gerund: "Inlaying" },
+        { base: "Input", past: "Input/Inputted", participle: "Input/Inputted", third: "Inputs", gerund: "Inputting" },
+        { base: "Interlay", past: "Interlaid", participle: "Interlaid", third: "Interlays", gerund: "Interlaying" },
+        { base: "Keep", past: "Kept", participle: "Kept", third: "Keeps", gerund: "Keeping" },
+        { base: "Kneel", past: "Knelt/Kneeled", participle: "Knelt/Kneeled", third: "Kneels", gerund: "Kneeling" },
+        { base: "Knit", past: "Knit/Knitted", participle: "Knit/Knitted", third: "Knits", gerund: "Knitting" },
+        { base: "Know", past: "Knew", participle: "Known", third: "Knows", gerund: "Knowing" },
+        { base: "Lay", past: "Laid", participle: "Laid", third: "Lays", gerund: "Laying" },
+        { base: "Lead", past: "Led", participle: "Led", third: "Leads", gerund: "Leading" },
+        { base: "Lean", past: "Leant/Leaned", participle: "Leant/Leaned", third: "Leans", gerund: "Leaning" },
+        { base: "Leap", past: "Leapt/Leaped", participle: "Leapt/Leaped", third: "Leaps", gerund: "Leaping" },
+        { base: "Learn", past: "Learnt/Learned", participle: "Learnt/Learned", third: "Learns", gerund: "Learning" },
+        { base: "Leave", past: "Left", participle: "Left", third: "Leaves", gerund: "Leaving" },
+        { base: "Lend", past: "Lent", participle: "Lent", third: "Lends", gerund: "Lending" },
+        { base: "Let", past: "Let", participle: "Let", third: "Lets", gerund: "Letting" },
+        { base: "Lie", past: "Lay", participle: "Lain", third: "Lies", gerund: "Lying" },
+        { base: "Light", past: "Lit", participle: "Lit", third: "Lights", gerund: "Lighting" },
+        { base: "Lose", past: "Lost", participle: "Lost", third: "Loses", gerund: "Losing" },
+        { base: "Make", past: "Made", participle: "Made", third: "Makes", gerund: "Making" },
+        { base: "Mean", past: "Meant", participle: "Meant", third: "Means", gerund: "Meaning" },
+        { base: "Meet", past: "Met", participle: "Met", third: "Meets", gerund: "Meeting" },
+        { base: "Melt", past: "Melted", participle: "Molten/Melted", third: "Melts", gerund: "Melting" },
+        { base: "Mislead", past: "Misled", participle: "Misled", third: "Misleads", gerund: "Misleading" },
+        { base: "Mistake", past: "Mistook", participle: "Mistaken", third: "Mistakes", gerund: "Mistaking" },
+        { base: "Misunderstand", past: "Misunderstood", participle: "Misunderstood", third: "Misunderstands", gerund: "Misunderstanding" },
+        { base: "Miswed", past: "Miswed/Miswedded", participle: "Miswed/Miswedded", third: "Misweds", gerund: "Miswedding" },
+        { base: "Mow", past: "Mowed", participle: "Mown", third: "Mows", gerund: "Mowing" },
+        { base: "Overdraw", past: "Overdrew", participle: "Overdrawn", third: "Overdraws", gerund: "Overdrawing" },
+        { base: "Overhear", past: "Overheard", participle: "Overheard", third: "Overhears", gerund: "Overhearing" },
+        { base: "Overtake", past: "Overtook", participle: "Overtaken", third: "Overtakes", gerund: "Overtaking" },
+        { base: "Pay", past: "Paid", participle: "Paid", third: "Pays", gerund: "Paying" },
+        { base: "Preset", past: "Preset", participle: "Preset", third: "Presets", gerund: "Presetting" },
+        { base: "Prove", past: "Proved", participle: "Proven/Proved", third: "Proves", gerund: "Proving" },
+        { base: "Put", past: "Put", participle: "Put", third: "Puts", gerund: "Putting" },
+        { base: "Quit", past: "Quit", participle: "Quit", third: "Quits", gerund: "Quitting" },
+        { base: "Re-prove", past: "Re-proved", participle: "Re-proven/Re-proved", third: "Re-proves", gerund: "Re-proving" },
+        { base: "Read", past: "Read", participle: "Read", third: "Reads", gerund: "Reading" },
+        { base: "Rid", past: "Rid/Ridded", participle: "Rid/Ridded", third: "Rids", gerund: "Ridding" },
+        { base: "Ride", past: "Rode", participle: "Ridden", third: "Rides", gerund: "Riding" },
+        { base: "Ring", past: "Rang", participle: "Rung", third: "Rings", gerund: "Ringing" },
+        { base: "Rise", past: "Rose", participle: "Risen", third: "Rises", gerund: "Rising" },
+        { base: "Rive", past: "Rived", participle: "Riven/Rived", third: "Rives", gerund: "Riving" },
+        { base: "Run", past: "Ran", participle: "Run", third: "Runs", gerund: "Running" },
+        { base: "Saw", past: "Sawed", participle: "Sawn/Sawed", third: "Saws", gerund: "Sawing" },
+        { base: "Say", past: "Said", participle: "Said", third: "Says", gerund: "Saying" },
+        { base: "See", past: "Saw", participle: "Seen", third: "Sees", gerund: "Seeing" },
+        { base: "Seek", past: "Sought", participle: "Sought", third: "Seeks", gerund: "Seeking" },
+        { base: "Sell", past: "Sold", participle: "Sold", third: "Sells", gerund: "Selling" },
+        { base: "Send", past: "Sent", participle: "Sent", third: "Sends", gerund: "Sending" },
+        { base: "Set", past: "Set", participle: "Set", third: "Sets", gerund: "Setting" },
+        { base: "Sew", past: "Sewed", participle: "Sewn/Sewed", third: "Sews", gerund: "Sewing" },
+        { base: "Shake", past: "Shook", participle: "Shaken", third: "Shakes", gerund: "Shaking" },
+        { base: "Shave", past: "Shaved", participle: "Shaven/Shaved", third: "Shaves", gerund: "Shaving" },
+        { base: "Shear", past: "Shore/Sheared", participle: "Shorn/Sheared", third: "Shears", gerund: "Shearing" },
+        { base: "Shed", past: "Shed", participle: "Shed", third: "Sheds", gerund: "Shedding" },
+        { base: "Shine", past: "Shone", participle: "Shone", third: "Shines", gerund: "Shining" },
+        { base: "Shoe", past: "Shod", participle: "Shod", third: "Shoes", gerund: "Shoeing" },
+        { base: "Shoot", past: "Shot", participle: "Shot", third: "Shoots", gerund: "Shooting" },
+        { base: "Show", past: "Showed", participle: "Shown", third: "Shows", gerund: "Showing" },
+        { base: "Shrink", past: "Shrank", participle: "Shrunk", third: "Shrinks", gerund: "Shrinking" },
+        { base: "Shut", past: "Shut", participle: "Shut", third: "Shuts", gerund: "Shutting" },
+        { base: "Sing", past: "Sang", participle: "Sung", third: "Sings", gerund: "Singing" },
+        { base: "Sink", past: "Sank", participle: "Sunk", third: "Sinks", gerund: "Sinking" },
+        { base: "Sit", past: "Sat", participle: "Sat", third: "Sits", gerund: "Sitting" },
+        { base: "Slay", past: "Slew", participle: "Slain", third: "Slays", gerund: "Slaying" },
+        { base: "Sleep", past: "Slept", participle: "Slept", third: "Sleeps", gerund: "Sleeping" },
+        { base: "Slide", past: "Slid", participle: "Slid/Slidden", third: "Slides", gerund: "Sliding" },
+        { base: "Sling", past: "Slung", participle: "Slung", third: "Slings", gerund: "Slinging" },
+        { base: "Slink", past: "Slunk", participle: "Slunk", third: "Slinks", gerund: "Slinking" },
+        { base: "Slit", past: "Slit", participle: "Slit", third: "Slits", gerund: "Slitting" },
+        { base: "Smell", past: "Smelt/Smelled", participle: "Smelt/Smelled", third: "Smells", gerund: "Smelling" },
+        { base: "Sneak", past: "Sneaked/Snuck", participle: "Sneaked/Snuck", third: "Sneaks", gerund: "Sneaking" },
+        { base: "Soothsay", past: "Soothsaid", participle: "Soothsaid", third: "Soothsays", gerund: "Soothsaying" },
+        { base: "Sow", past: "Sowed", participle: "Sown", third: "Sows", gerund: "Sowing" },
+        { base: "Speak", past: "Spoke", participle: "Spoken", third: "Speaks", gerund: "Speaking" },
+        { base: "Speed", past: "Sped/Speeded", participle: "Sped/Speeded", third: "Speeds", gerund: "Speeding" },
+        { base: "Spell", past: "Spelt/Spelled", participle: "Spelt/Spelled", third: "Spells", gerund: "Spelling" },
+        { base: "Spend", past: "Spent", participle: "Spent", third: "Spends", gerund: "Spending" },
+        { base: "Spill", past: "Spilt/Spilled", participle: "Spilt/Spilled", third: "Spills", gerund: "Spilling" },
+        { base: "Spin", past: "Span/Spun", participle: "Spun", third: "Spins", gerund: "Spinning" },
+        { base: "Spit", past: "Spat/Spit", participle: "Spat/Spit", third: "Spits", gerund: "Spitting" },
+        { base: "Split", past: "Split", participle: "Split", third: "Splits", gerund: "Splitting" },
+        { base: "Spoil", past: "Spoilt/Spoiled", participle: "Spoilt/Spoiled", third: "Spoils", gerund: "Spoiling" },
+        { base: "Spread", past: "Spread", participle: "Spread", third: "Spreads", gerund: "Spreading" },
+        { base: "Spring", past: "Sprang", participle: "Sprung", third: "Springs", gerund: "Springing" },
+        { base: "Stand", past: "Stood", participle: "Stood", third: "Stands", gerund: "Standing" },
+        { base: "Steal", past: "Stole", participle: "Stolen", third: "Steals", gerund: "Stealing" },
+        { base: "Stick", past: "Stuck", participle: "Stuck", third: "Sticks", gerund: "Sticking" },
+        { base: "Sting", past: "Stung", participle: "Stung", third: "Stings", gerund: "Stinging" },
+        { base: "Stink", past: "Stank", participle: "Stunk", third: "Stinks", gerund: "Stinking" },
+        { base: "Stride", past: "Strode/Strided", participle: "Stridden", third: "Strides", gerund: "Striding" },
+        { base: "Strike", past: "Struck", participle: "Struck/Stricken", third: "Strikes", gerund: "Striking" },
+        { base: "String", past: "Strung", participle: "Strung", third: "Strings", gerund: "Stringing" },
+        { base: "Strip", past: "Stript/Stripped", participle: "Stript/Stripped", third: "Strips", gerund: "Stripping" },
+        { base: "Strive", past: "Strove", participle: "Striven", third: "Strives", gerund: "Striving" },
+        { base: "Sublet", past: "Sublet", participle: "Sublet", third: "Sublets", gerund: "Subletting" },
+        { base: "Sunburn", past: "Sunburned/Sunburnt", participle: "Sunburned/Sunburnt", third: "Sunburns", gerund: "Sunburning" },
+        { base: "Swear", past: "Swore", participle: "Sworn", third: "Swears", gerund: "Swearing" },
+        { base: "Sweat", past: "Sweat/Sweated", participle: "Sweat/Sweated", third: "Sweats", gerund: "Sweating" },
+        { base: "Sweep", past: "Swept/Sweeped", participle: "Swept/Sweeped", third: "Sweeps", gerund: "Sweeping" },
+        { base: "Swell", past: "Swelled", participle: "Swollen", third: "Swells", gerund: "Swelling" },
+        { base: "Swim", past: "Swam", participle: "Swum", third: "Swims", gerund: "Swimming" },
+        { base: "Swing", past: "Swung", participle: "Swung", third: "Swings", gerund: "Swinging" },
+        { base: "Take", past: "Took", participle: "Taken", third: "Takes", gerund: "Taking" },
+        { base: "Teach", past: "Taught", participle: "Taught", third: "Teaches", gerund: "Teaching" }
+    ];
+
+    // -------------------------------------------------------------
+    // VERB TENSES GUIDE DATA
+    // -------------------------------------------------------------
+    const tenseGuideData = {
+        present: [
+            {
+                title: "Simple Present",
+                formula: "[VERB] + s/es (third person singular)",
+                uses: [
+                    "Repeated Actions / Habits (e.g., 'The train leaves every morning at 8 AM.')",
+                    "Facts or Generalizations (e.g., 'Cats like milk.')",
+                    "Scheduled Events in the Near Future (e.g., 'The party starts at 8 o\'clock.')",
+                    "Non-Continuous Verbs Now (e.g., 'He needs help right now.')"
+                ],
+                active: "Once a week, Tom cleans the car.",
+                passive: "Once a week, the car is cleaned by Tom."
+            },
+            {
+                title: "Present Progressive (Continuous)",
+                formula: "[am / is / are + verb-ing]",
+                uses: [
+                    "Action happening now at this very moment (e.g., 'You are learning English now.')",
+                    "Longer actions in progress this week/month (e.g., 'I am studying to become a doctor.')",
+                    "Near future plans (e.g., 'I am meeting some friends after work.')",
+                    "Irritation with 'always' or 'constantly' (e.g., 'She is always coming to class late.')"
+                ],
+                active: "Right now, Tom is writing the letter.",
+                passive: "Right now, the letter is being written by Tom."
+            },
+            {
+                title: "Present Perfect",
+                formula: "[has / have + past participle]",
+                uses: [
+                    "Experience at an unspecified time before now (e.g., 'I have been to France three times.')",
+                    "Change over time (e.g., 'My English has really improved since I moved.')",
+                    "Accomplishments of humanity (e.g., 'Man has walked on the Moon.')",
+                    "Duration with Non-Continuous Verbs (e.g., 'I have had a cold for two weeks.')"
+                ],
+                active: "Many tourists have visited that castle.",
+                passive: "That castle has been visited by many tourists."
+            },
+            {
+                title: "Present Perfect Progressive",
+                formula: "[has / have + been + verb-ing]",
+                uses: [
+                    "Duration of activity continuing from past to present (e.g., 'They have been talking for the last hour.')",
+                    "General activity in progress lately/recently without exact duration."
+                ],
+                active: "Recently, John has been doing the work.",
+                passive: "Recently, the work has been being done by John."
+            }
+        ],
+        past: [
+            {
+                title: "Simple Past",
+                formula: "[VERB + ed] or irregular verb forms",
+                uses: [
+                    "Completed action at a specific time in the past (e.g., 'I saw a movie yesterday.')",
+                    "A series of completed actions in order (e.g., 'I finished work, walked to the beach, and found a nice spot.')",
+                    "Habits or facts in the past (e.g., 'I studied French when I was a child.')"
+                ],
+                active: "Tom repaired the car.",
+                passive: "The car was repaired by Tom."
+            },
+            {
+                title: "Past Continuous",
+                formula: "[was / were + verb-ing]",
+                uses: [
+                    "Longer ongoing action interrupted by a shorter action (e.g., 'I was watching TV when she called.')",
+                    "Parallel actions happening simultaneously (e.g., 'I was studying while he was making dinner.')",
+                    "Setting the atmosphere of an office or scene."
+                ],
+                active: "The salesman was helping the customer when the thief came in.",
+                passive: "The customer was being helped by the salesman when the thief came in."
+            },
+            {
+                title: "Past Perfect",
+                formula: "[had + past participle]",
+                uses: [
+                    "Action completed before another action in the past (e.g., 'I had never seen such a beach before I went to Kauai.')",
+                    "Duration before something in the past with non-continuous verbs."
+                ],
+                active: "George had repaired many cars before he received his license.",
+                passive: "Many cars had been repaired by George before he received his license."
+            },
+            {
+                title: "Past Perfect Continuous",
+                formula: "[had been + verb-ing]",
+                uses: [
+                    "Duration before another event in the past (e.g., 'They had been talking for over an hour before Tony arrived.')",
+                    "Cause and effect in the past (e.g., 'Jason was tired because he had been jogging.')"
+                ],
+                active: "Chef Jones had been preparing dinners for two years before he moved.",
+                passive: "Dinners had been being prepared by Chef Jones for two years."
+            }
+        ],
+        future: [
+            {
+                title: "Simple Future (Will vs. Be Going To)",
+                formula: "[will + verb] OR [am/is/are + going to + verb]",
+                uses: [
+                    "'Will' for voluntary actions or immediate decisions (e.g., 'I will translate the email.')",
+                    "'Will' for promises (e.g., 'I promise I will not tell him.')",
+                    "'Be going to' for planned intentions (e.g., 'He is going to spend vacation in Hawaii.')",
+                    "Both for general future predictions (e.g., 'The year 2222 will be interesting.')"
+                ],
+                active: "Sally is going to make a beautiful dinner tonight.",
+                passive: "A beautiful dinner is going to be made by Sally tonight."
+            },
+            {
+                title: "Future Continuous",
+                formula: "[will be + verb-ing] OR [am/is/are going to be + verb-ing]",
+                uses: [
+                    "Action in progress interrupted by a short action (e.g., 'I will be watching TV when she arrives.')",
+                    "Action in progress at a specific future timestamp (e.g., 'At midnight, we will still be driving.')"
+                ],
+                active: "At 8:00 PM, John will be washing the dishes.",
+                passive: "At 8:00 PM, the dishes will be being washed by John."
+            },
+            {
+                title: "Future Perfect",
+                formula: "[will have + past participle]",
+                uses: [
+                    "Action completed prior to another future reference point (e.g., 'By next November, I will have received my promotion.')"
+                ],
+                active: "They will have completed the project before the deadline.",
+                passive: "The project will have been completed before the deadline."
+            },
+            {
+                title: "Future Perfect Continuous",
+                formula: "[will have been + verb-ing]",
+                uses: [
+                    "Duration of activity continuing up until a future cutoff (e.g., 'They will have been talking for an hour by the time Thomas arrives.')"
+                ],
+                active: "The artist will have been painting the mural for six months.",
+                passive: "The mural will have been being painted by the artist for six months."
+            }
+        ],
+        special: [
+            {
+                title: "Types of Verbs (Normal, Non-Continuous, Mixed)",
+                formula: "Core Distinction Rule",
+                uses: [
+                    "Normal Verbs: Physical actions visible to others (run, walk, eat). Usable in all continuous forms.",
+                    "Non-Continuous Verbs: Abstract, possession, or emotion (be, want, cost, belong, love). Never used in continuous (-ing) forms!",
+                    "Mixed Verbs: Verbs with dual meanings (e.g., 'I have a car' vs 'I am having fun')."
+                ],
+                active: "Incorrect: 'She is loving this ice cream.'",
+                passive: "Correct: 'She loves this chocolate ice cream.'"
+            },
+            {
+                title: "Used To & Would Always",
+                formula: "[used to + verb] / [would always + verb]",
+                uses: [
+                    "'Used to': Habits or past facts/generalizations that stopped.",
+                    "'Would always': Only used for repeated willing actions, NOT past states."
+                ],
+                active: "My mother would always make the pies.",
+                passive: "The pies would always be made by my mother."
+            }
+        ]
+    };
+
+    // -------------------------------------------------------------
+    // APP STATE & CONTROLLER (TIMER TOGGLE SUPPORT)
+    // -------------------------------------------------------------
+    let currentTier = 'advanced';
+    let currentTopic = 'notes';
+    let currentMode = 'single';
+    let isTimerEnabled = false;
+    let currentPlayer = 1;
+    let scores = { 1: 0, 2: 0 };
+    let filteredQuestions = [];
+    let currentQuestionIndex = 0;
+    let activeQuestion = null;
+    let timerInterval = null;
+    let timeLeft = 45;
+    const TIME_LIMIT = 45;
+    let activeModalVerb = null;
+
+    // View Navigation
+    function switchView(viewName) {
+        document.querySelectorAll('.app-view').forEach(v => v.style.display = 'none');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+        if (viewName === 'quest') {
+            document.getElementById('view-quest').style.display = 'block';
+            document.querySelectorAll('.nav-btn')[0].classList.add('active');
+        } else if (viewName === 'tenses') {
+            document.getElementById('view-tenses').style.display = 'block';
+            document.querySelectorAll('.nav-btn')[1].classList.add('active');
+            renderTenseCategory('present');
+        } else if (viewName === 'irregular') {
+            document.getElementById('view-irregular').style.display = 'block';
+            document.querySelectorAll('.nav-btn')[2].classList.add('active');
+            renderIrregularTable(irregularVerbsData);
+        } else if (viewName === 'notes-bank') {
+            document.getElementById('view-notes-bank').style.display = 'block';
+            document.querySelectorAll('.nav-btn')[3].classList.add('active');
+            renderNotesBank(questionsDatabase.advanced.notes);
+        }
+    }
+
+    // Quest Management
+    function setTier(tier) {
+        currentTier = tier;
+        document.querySelectorAll('.tier-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`btn-${tier}`).classList.add('active');
+        resetGame();
+    }
+
+    function resetGame() {
+        scores = { 1: 0, 2: 0 };
+        currentPlayer = 1;
+        document.getElementById('p1-score').innerText = "0";
+        document.getElementById('p2-score').innerText = "0";
+
+        const tierGroup = questionsDatabase[currentTier];
+        filteredQuestions = [];
+
+        if (currentTopic === 'any') {
+            Object.values(tierGroup).forEach(arr => { filteredQuestions = filteredQuestions.concat(arr); });
+        } else {
+            filteredQuestions = tierGroup[currentTopic] || [];
+        }
+
+        filteredQuestions.sort(() => Math.random() - 0.5);
+        currentQuestionIndex = 0;
+
+        if (filteredQuestions.length === 0) {
+            document.getElementById('quest-surface').innerHTML = "<em>No questions found for this topic/tier combination. Try selecting 'Handwritten Notes Bank (Adults)' or 'All Topics Mixed'.</em>";
+            return;
+        }
+
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        clearInterval(timerInterval);
+        const timerDisplay = document.getElementById('timer-display');
+
+        if (isTimerEnabled) {
+            timeLeft = TIME_LIMIT;
+            timerDisplay.innerHTML = `⏱️ Time: <span id="timer-val">${timeLeft}</span>s`;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const valElem = document.getElementById('timer-val');
+                if (valElem) valElem.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timeOutAnswer();
+                }
+            }, 1000);
+        } else {
+            timerDisplay.innerHTML = `🧘 Practice Mode (Untimed)`;
+        }
+
+        document.getElementById('hint-box').style.display = 'none';
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'inline-flex';
+        document.getElementById('next-btn').style.display = 'none';
+
+        activeQuestion = filteredQuestions[currentQuestionIndex];
+        
+        let blankCounter = 0;
+        const questHtml = activeQuestion.text.replace(/\[blank\]/g, () => {
+            const inputHtml = `<input type="text" class="blank-input" data-index="${blankCounter}" placeholder="blank ${blankCounter + 1}..." autocomplete="off" autocorrect="off" autocapitalize="none" />`;
+            blankCounter++;
+            return inputHtml;
+        });
+
+        document.getElementById('quest-surface').innerHTML = questHtml;
+
+        const inputs = document.querySelectorAll('.blank-input');
+        if (inputs.length > 0 && window.innerWidth > 680) {
+            inputs[0].focus(); // Avoid jarring keyboard popups automatically on mobile page load
+        }
+
+        inputs.forEach((inp, idx) => {
+            inp.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    if (idx < inputs.length - 1) {
+                        inputs[idx + 1].focus();
+                    } else {
+                        checkAnswer();
+                    }
+                }
+            });
+        });
+    }
+
+    function checkAnswer() {
+        clearInterval(timerInterval);
+        const inputs = document.querySelectorAll('.blank-input');
+        const expectedAnswers = activeQuestion.answers;
+        let allCorrect = true;
+
+        inputs.forEach((inputField, idx) => {
+            const userVal = inputField.value.trim().toLowerCase().replace(/’/g, "'");
+            const correctVal = expectedAnswers[idx].trim().toLowerCase().replace(/’/g, "'");
+
+            if (userVal === correctVal) {
+                inputField.classList.add('correct');
+            } else {
+                inputField.classList.add('incorrect');
+                allCorrect = false;
+            }
+        });
+
+        const feedbackBox = document.getElementById('feedback-box');
+        feedbackBox.style.display = 'block';
+
+        if (allCorrect) {
+            scores[currentPlayer] += 10;
+            feedbackBox.style.color = 'var(--correct)';
+            feedbackBox.innerText = '🎉 All blanks correct! Superb grammar mastery!';
+        } else {
+            feedbackBox.style.color = 'var(--incorrect)';
+            const formattedExpected = expectedAnswers.map((ans, i) => `[${i + 1}] "${ans}"`).join('  ');
+            feedbackBox.innerHTML = `❌ Check marked blanks.<br><strong>Expected Answers:</strong> ${formattedExpected}`;
+        }
+
+        document.getElementById(`p${currentPlayer}-score`).innerText = scores[currentPlayer];
+        document.getElementById('submit-btn').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'inline-flex';
+    }
+
+    function timeOutAnswer() {
+        const inputs = document.querySelectorAll('.blank-input');
+        inputs.forEach(input => input.classList.add('incorrect'));
+        const feedbackBox = document.getElementById('feedback-box');
+        feedbackBox.style.display = 'block';
+        feedbackBox.style.color = 'var(--incorrect)';
+        const formattedExpected = activeQuestion.answers.map((ans, i) => `[${i + 1}] "${ans}"`).join('  ');
+        feedbackBox.innerHTML = `⏱️ Time's up!<br><strong>Correct Answers:</strong> ${formattedExpected}`;
+        document.getElementById('submit-btn').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'inline-flex';
+    }
+
+    function nextQuestion() {
+        if (currentMode === 'multi') {
+            currentPlayer = currentPlayer === 1 ? 2 : 1;
+            document.getElementById('p1-score-card').classList.toggle('active-turn', currentPlayer === 1);
+            document.getElementById('p2-score-card').classList.toggle('active-turn', currentPlayer === 2);
+        }
+
+        currentQuestionIndex = (currentQuestionIndex + 1) % filteredQuestions.length;
+        loadQuestion();
+    }
+
+    function showHint() {
+        const hintBox = document.getElementById('hint-box');
+        hintBox.innerText = "💡 Hint: " + activeQuestion.hint;
+        hintBox.style.display = 'block';
+    }
+
+    // Verb Tenses View Renderer
+    function renderTenseCategory(catKey) {
+        document.querySelectorAll('.tense-tab').forEach(t => t.classList.remove('active'));
+        if (event && event.target && event.target.classList.contains('tense-tab')) {
+            event.target.classList.add('active');
+        } else {
+            const tabs = document.querySelectorAll('.tense-tab');
+            if (tabs.length > 0) tabs[0].classList.add('active');
+        }
+
+        const items = tenseGuideData[catKey] || [];
+        const container = document.getElementById('tenses-card-container');
+        container.innerHTML = items.map(item => `
+            <div class="tense-card">
+                <div class="tense-card-header">
+                    <h3>${item.title}</h3>
+                    <span class="formula-badge">${item.formula}</span>
+                </div>
+                <div class="tense-card-body">
+                    <ul>${item.uses.map(u => `<li>${u}</li>`).join('')}</ul>
+                    <div class="example-grid">
+                        <div class="example-col">
+                            <span>Active Form</span>
+                            <p>${item.active}</p>
+                        </div>
+                        <div class="example-col">
+                            <span>Passive Form</span>
+                            <p>${item.passive}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Irregular Verbs Hub Renderer & Audio Pronunciation
+    function renderIrregularTable(list) {
+        const tbody = document.getElementById('irregular-table-body');
+        tbody.innerHTML = list.map(v => `
+            <tr>
+                <td><span class="verb-link" onclick="openVerbModal('${v.base}')">${v.base}</span></td>
+                <td>${v.past}</td>
+                <td>${v.participle}</td>
+                <td>${v.third}</td>
+                <td>${v.gerund}</td>
+                <td>
+                    <button class="speak-cell-btn" title="Pronounce" onclick="speakText('${v.base}, ${v.past.split('/')[0]}, ${v.participle.split('/')[0]}')">🔊</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    function searchVerbs() {
+        const q = document.getElementById('verb-search-input').value.toLowerCase().trim();
+        const filtered = irregularVerbsData.filter(v => 
+            v.base.toLowerCase().includes(q) ||
+            v.past.toLowerCase().includes(q) ||
+            v.participle.toLowerCase().includes(q)
+        );
+        renderIrregularTable(filtered);
+    }
+
+    function speakText(text) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.rate = 0.85;
+            utter.lang = 'en-US';
+            window.speechSynthesis.speak(utter);
+        }
+    }
+
+    function openVerbModal(baseName) {
+        activeModalVerb = irregularVerbsData.find(v => v.base.toLowerCase() === baseName.toLowerCase());
+        if (!activeModalVerb) return;
+
+        document.getElementById('modal-verb-name').innerText = activeModalVerb.base;
+        document.getElementById('modal-verb-forms').innerText = `${activeModalVerb.base} — ${activeModalVerb.past} — ${activeModalVerb.participle}`;
+        document.getElementById('modal-verb-third').innerText = activeModalVerb.third;
+        document.getElementById('modal-verb-gerund').innerText = activeModalVerb.gerund;
+        document.getElementById('verb-modal').style.display = 'flex';
+    }
+
+    function closeVerbModal() {
+        document.getElementById('verb-modal').style.display = 'none';
+    }
+
+    function speakModalVerb() {
+        if (activeModalVerb) {
+            speakText(`${activeModalVerb.base}, past tense ${activeModalVerb.past.split('/')[0]}, past participle ${activeModalVerb.participle.split('/')[0]}`);
+        }
+    }
+
+    // Direct Notes Study Sheet Functions
+    function renderNotesBank(list) {
+        const container = document.getElementById('notes-list-container');
+        if (!list || list.length === 0) {
+            container.innerHTML = '<p style="color: #64748b;">No notes match your search.</p>';
+            return;
+        }
+        container.innerHTML = list.map((item, idx) => {
+            let answerIdx = 0;
+            const fullSolvedSentence = item.text.replace(/\[blank\]/g, () => {
+                const ans = item.answers[answerIdx++];
+                return `<strong style="color:var(--correct); text-decoration: underline;">${ans}</strong>`;
+            });
+
+            return `
+                <div class="notes-card">
+                    <div class="notes-card-title">Exercise #${idx + 1}</div>
+                    <div class="notes-card-sentence">${fullSolvedSentence}</div>
+                    <div class="notes-card-rule">
+                        <strong>Grammar Rule / Annotation:</strong> ${item.hint}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function filterNotesStudySheet() {
+        const q = document.getElementById('notes-search-input').value.toLowerCase().trim();
+        const allNotes = questionsDatabase.advanced.notes;
+        const filtered = allNotes.filter(n => 
+            n.text.toLowerCase().includes(q) ||
+            n.answers.some(a => a.toLowerCase().includes(q)) ||
+            n.hint.toLowerCase().includes(q)
+        );
+        renderNotesBank(filtered);
+    }
+
+    // Event Bindings
+    document.getElementById('topic-select').addEventListener('change', (e) => {
+        currentTopic = e.target.value;
+        resetGame();
+    });
+
+    document.getElementById('mode-select').addEventListener('change', (e) => {
+        currentMode = e.target.value;
+        document.getElementById('p2-score-card').style.display = (currentMode === 'multi') ? 'block' : 'none';
+        resetGame();
+    });
+
+    document.getElementById('timer-mode-select').addEventListener('change', (e) => {
+        isTimerEnabled = (e.target.value === 'on');
+        clearInterval(timerInterval);
+        loadQuestion();
+    });
+
+    // Start default view on page load (Practice Mode Untimed)
+    resetGame();
+</script>
+</body>
+</html>
