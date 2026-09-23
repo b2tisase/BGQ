@@ -631,7 +631,7 @@
             gap: 10px;
             width: 100%;
             max-width: 760px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .stat-badge {
@@ -656,6 +656,40 @@
             color: var(--primary);
         }
 
+        /* Date Banner for Inspected / Active Day */
+        .active-date-banner {
+            width: 100%;
+            max-width: 760px;
+            background: #eff6ff;
+            border: 1.5px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            color: #1e3a8a;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .date-banner-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .date-banner-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+        }
+
+        .date-banner-sub {
+            font-size: 0.88rem;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+
         /* Themes for 100 Days Chart */
         .chart-pocket-board {
             padding: 14px;
@@ -668,7 +702,7 @@
         }
 
         .chart-pocket-board.theme-pocket {
-            background-color: #1d4ed8; /* Authentic Blue Pocket Wall */
+            background-color: #1d4ed8; /* Blue Pocket Wall */
             border: 3px solid #1e40af;
         }
 
@@ -719,21 +753,17 @@
             user-select: none;
         }
 
-        /* FRONT FACE: Physical Card Filled */
+        /* FRONT FACE: Physical Card Inserted (Active) */
         .card-front {
             border: 1px solid rgba(0,0,0,0.12);
             box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
-        /* White Cards (Default) */
+        /* In Pocket Chart Mode: ALL ACTIVE CARDS ARE CRIMSON RED ALL THE WAY TO 100 */
         .theme-pocket .card-front {
-            background-color: #ffffff;
-            color: #b91c1c; /* Crimson Red Numbers */
-        }
-        /* Red Special Cards (Days 1 to 27) */
-        .theme-pocket .cell-flipper.special-red .card-front {
-            background-color: #dc2626;
-            color: #ffffff;
+            background-color: #dc2626 !important;
+            color: #ffffff !important;
+            border-color: #b91c1c !important;
         }
 
         .theme-dark .card-front {
@@ -748,18 +778,17 @@
             border: 1px solid #94a3b8;
         }
 
-        /* BACK FACE: Pocket/Slot with Clearly Visible Outlined Day Number */
+        /* BACK FACE: Open Slot with CLEARLY VISIBLE Outlined Number */
         .card-back {
             transform: rotateY(180deg);
             border-radius: 6px;
         }
 
-        /* In Pocket Mode: Subtle see-through pocket with clearly readable outlined number */
         .theme-pocket .card-back {
             background-color: rgba(255, 255, 255, 0.08);
-            color: #ffffff; /* Bright white text so it's always readable! */
+            color: #ffffff !important; /* Clear bright number so it is never covered or hidden */
             border: 1.5px dashed rgba(255, 255, 255, 0.45);
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
         }
 
         .theme-dark .card-back {
@@ -882,7 +911,7 @@
         <span>🏆</span>
         <span>Bitew Grammar Quest</span>
     </div>
-    <div class="header-badge">Suite v3.2</div>
+    <div class="header-badge">Suite v3.3</div>
 </header>
 
 <main class="main-content">
@@ -1030,24 +1059,38 @@
         <!-- VIEW 6: 100 DAYS OF SCHOOL INTERACTIVE CHART -->
         <div id="view-school-chart" class="app-view" style="display: none;">
             <div class="chart-wrapper">
-                <div style="text-align: center; margin-bottom: 14px;">
-                    <h2 style="margin: 0 0 4px 0; color: #1e293b; font-size: 1.3rem;">💯 100 Days of School Chart</h2>
-                    <p style="margin: 0; font-size: 0.9rem; color: #64748b;">Tap any card to toggle between filled and empty pocket states with sound.</p>
+                <div style="text-align: center; margin-bottom: 12px;">
+                    <h2 style="margin: 0 0 4px 0; color: #1e293b; font-size: 1.35rem;">💯 Melkam's 100 Days of School Chart</h2>
+                    <p style="margin: 0; font-size: 0.9rem; color: #64748b;">Tap any school day to view its exact calendar date and toggle its completion state.</p>
                 </div>
 
-                <!-- Stats Tracker Dashboard -->
+                <!-- Stats Dashboard -->
                 <div class="chart-stats-dashboard">
                     <div class="stat-badge">
                         <span class="stat-label">Current School Day</span>
-                        <span class="stat-val" id="stat-current-day">Day 27</span>
+                        <span class="stat-val" id="stat-current-day">Day 29</span>
                     </div>
                     <div class="stat-badge">
-                        <span class="stat-label">Completed Days</span>
-                        <span class="stat-val" id="stat-completed-count">27 / 100</span>
+                        <span class="stat-label">Days Completed</span>
+                        <span class="stat-val" id="stat-completed-count">28 / 100</span>
                     </div>
                     <div class="stat-badge">
                         <span class="stat-label">Days to 100th Day</span>
-                        <span class="stat-val" id="stat-remaining-count">73 Days</span>
+                        <span class="stat-val" id="stat-remaining-count">71 Days</span>
+                    </div>
+                </div>
+
+                <!-- Active Day Date Inspector Banner -->
+                <div class="active-date-banner" id="active-date-banner">
+                    <div class="date-banner-left">
+                        <span style="font-size: 1.5rem;">📅</span>
+                        <div>
+                            <div class="date-banner-title" id="banner-day-number">School Day 29</div>
+                            <div class="date-banner-sub" id="banner-full-date">Wednesday, September 23, 2026</div>
+                        </div>
+                    </div>
+                    <div>
+                        <span id="banner-status-badge" style="background: #2563eb; color: #fff; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 0.85rem;">Today's Session</span>
                     </div>
                 </div>
 
@@ -1056,14 +1099,14 @@
                     <div class="control-group">
                         <label for="chartThemeSelect">🎨 Chart Theme:</label>
                         <select id="chartThemeSelect" onchange="changeChartTheme(this.value)">
-                            <option value="theme-pocket" selected>Classroom Pocket (Blue/Red/White)</option>
+                            <option value="theme-pocket" selected>Classroom Pocket (Crimson Red Cards)</option>
                             <option value="theme-dark">Dark Minimalist</option>
                             <option value="theme-light">Classroom Light</option>
                         </select>
                     </div>
                     <div class="control-group" style="justify-content: flex-end;">
                         <div style="display: flex; gap: 8px;">
-                            <button class="action-btn" style="background:#2563eb; flex:1;" onclick="setAllSchoolDays(true)">Show All</button>
+                            <button class="action-btn" style="background:#2563eb; flex:1;" onclick="setAllSchoolDays(true)">Fill to 100</button>
                             <button class="action-btn" style="background:#64748b; flex:1;" onclick="setAllSchoolDays(false)">Clear All</button>
                         </div>
                     </div>
@@ -1108,7 +1151,7 @@
 
 <script>
     // -------------------------------------------------------------
-    // WEB AUDIO API SYNTHESIZER (POCKET TAP / FLIP SOUND EFFECTS)
+    // WEB AUDIO API SYNTHESIZER (TAP / FLIP SOUND EFFECTS)
     // -------------------------------------------------------------
     let audioCtx = null;
     function playPocketCardSound(isInserting) {
@@ -1127,13 +1170,13 @@
             const startTime = audioCtx.currentTime;
 
             if (isInserting) {
-                // Card inserted: Pleasant crisp chime
+                // Card inserted: Crisp uplifting chime
                 osc.frequency.setValueAtTime(320, startTime);
                 osc.frequency.exponentialRampToValueAtTime(540, startTime + 0.08);
                 gain.gain.setValueAtTime(0.2, startTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.09);
             } else {
-                // Card removed / flipped: Soft paper slide thud
+                // Card removed: Soft paper slide tone
                 osc.frequency.setValueAtTime(240, startTime);
                 osc.frequency.exponentialRampToValueAtTime(120, startTime + 0.07);
                 gain.gain.setValueAtTime(0.18, startTime);
@@ -1151,13 +1194,49 @@
     }
 
     // -------------------------------------------------------------
-    // 100 DAYS OF SCHOOL CONTROLLER
+    // 100 DAYS OF SCHOOL LOGIC & CALENDAR DATE CALCULATOR
     // -------------------------------------------------------------
-    const SCHOOL_DAYS_KEY = 'school_days_chart_data_v2';
-    const SCHOOL_THEME_KEY = 'school_days_theme_choice_v2';
-    let schoolDaysState = JSON.parse(localStorage.getItem(SCHOOL_DAYS_KEY)) || {};
+    const SCHOOL_DAYS_KEY = 'school_days_chart_data_v3';
+    const SCHOOL_THEME_KEY = 'school_days_theme_choice_v3';
+    let schoolDaysState = JSON.parse(localStorage.getItem(SCHOOL_DAYS_KEY)) || null;
+
+    // Anchor Date: Day 29 = Wednesday, September 23, 2026
+    const ANCHOR_DAY = 29;
+    const ANCHOR_DATE = new Date(2026, 8, 23); // Months are 0-indexed (8 = September)
+
+    // Calculate calendar dates skipping weekends
+    function getSchoolDayCalendarDate(dayNumber) {
+        let diff = dayNumber - ANCHOR_DAY;
+        let currentDate = new Date(ANCHOR_DATE);
+        let step = diff >= 0 ? 1 : -1;
+        let count = Math.abs(diff);
+
+        while (count > 0) {
+            currentDate.setDate(currentDate.getDate() + step);
+            const dayOfWeek = currentDate.getDay();
+            // 0 = Sunday, 6 = Saturday (Skip weekends)
+            if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                count--;
+            }
+        }
+
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        return currentDate.toLocaleDateString('en-US', options);
+    }
+
+    // Initialize 28 completed days by default for Melkam if first visit
+    function ensureInitialSchoolDays() {
+        if (!schoolDaysState) {
+            schoolDaysState = {};
+            for (let i = 1; i <= 100; i++) {
+                schoolDaysState[i] = (i <= 28); // Days 1 to 28 completed
+            }
+            localStorage.setItem(SCHOOL_DAYS_KEY, JSON.stringify(schoolDaysState));
+        }
+    }
 
     function initSchoolChart() {
+        ensureInitialSchoolDays();
         const gridContainer = document.getElementById('school-grid-100');
         gridContainer.innerHTML = '';
 
@@ -1166,24 +1245,18 @@
             flipper.className = 'cell-flipper';
             flipper.dataset.day = i;
 
-            // Days 1 to 27 are marked special red in pocket theme
-            if (i <= 27) {
-                flipper.classList.add('special-red');
-            }
-
-            // Evaluation: true = card is present; false = flipped/empty pocket
-            // Default setup: days 1 to 27 filled, rest filled unless saved
-            const isCardPresent = schoolDaysState[i] !== undefined ? schoolDaysState[i] : true;
-            if (!isCardPresent) {
+            // In our system: false = slot is flipped/empty; true = active red card inserted
+            const isCompleted = schoolDaysState[i] !== undefined ? schoolDaysState[i] : false;
+            if (!isCompleted) {
                 flipper.classList.add('is-flipped');
             }
 
-            // FRONT FACE: Full cardboard card
+            // FRONT FACE: Crimson Red card for ALL numbers 1-100
             const front = document.createElement('div');
             front.className = 'card-face card-front';
             front.innerText = i;
 
-            // BACK FACE: Open pocket with clear, visible outlined number
+            // BACK FACE: Open pocket with CLEARLY VISIBLE outlined number
             const back = document.createElement('div');
             back.className = 'card-face card-back';
             back.innerText = i;
@@ -1196,6 +1269,7 @@
         }
 
         updateSchoolTrackerStats();
+        inspectDayDate(29); // Default banner inspects Day 29 (Today)
     }
 
     function toggleSchoolDay(dayNum, flipperElem) {
@@ -1206,6 +1280,27 @@
 
         playPocketCardSound(cardNowPresent);
         updateSchoolTrackerStats();
+        inspectDayDate(dayNum);
+    }
+
+    function inspectDayDate(dayNum) {
+        const fullDateStr = getSchoolDayCalendarDate(dayNum);
+        document.getElementById('banner-day-number').innerText = `School Day ${dayNum}`;
+        document.getElementById('banner-full-date').innerText = fullDateStr;
+
+        const isCompleted = schoolDaysState[dayNum] === true;
+        const statusBadge = document.getElementById('banner-status-badge');
+
+        if (dayNum === 29) {
+            statusBadge.innerText = isCompleted ? "Day 29 Marked Done" : "Today's Session (Day 29)";
+            statusBadge.style.background = isCompleted ? "#059669" : "#2563eb";
+        } else if (isCompleted) {
+            statusBadge.innerText = "Completed ✓";
+            statusBadge.style.background = "#059669";
+        } else {
+            statusBadge.innerText = "Scheduled / Empty";
+            statusBadge.style.background = "#64748b";
+        }
     }
 
     function updateSchoolTrackerStats() {
@@ -1213,14 +1308,13 @@
         let highestDay = 0;
 
         for (let i = 1; i <= 100; i++) {
-            const isPresent = schoolDaysState[i] !== undefined ? schoolDaysState[i] : true;
-            if (isPresent) {
+            if (schoolDaysState[i] === true) {
                 totalCompleted++;
                 if (i > highestDay) highestDay = i;
             }
         }
 
-        document.getElementById('stat-current-day').innerText = highestDay > 0 ? `Day ${highestDay}` : 'Day 0';
+        document.getElementById('stat-current-day').innerText = `Day 29`;
         document.getElementById('stat-completed-count').innerText = `${totalCompleted} / 100`;
         document.getElementById('stat-remaining-count').innerText = `${100 - totalCompleted} Days`;
     }
