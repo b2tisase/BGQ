@@ -93,7 +93,7 @@
         /* Top Navigation Tabs */
         .main-nav {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 6px;
             background: #eef2f5;
             padding: 6px;
@@ -125,7 +125,7 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
         }
 
-        /* Setup Panels */
+        /* Controls Panel */
         .controls-panel {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -369,7 +369,7 @@
             color: #64748b;
         }
 
-        /* Irregular Verbs Table Desktop */
+        /* Irregular Verbs Hub */
         .table-search-bar {
             width: 100%;
             margin-bottom: 14px;
@@ -430,7 +430,6 @@
             min-height: 36px;
         }
 
-        /* Irregular Verbs Mobile Card View (Hidden on Desktop) */
         .mobile-verb-cards {
             display: none;
             flex-direction: column;
@@ -616,6 +615,165 @@
             padding: 4px 8px;
         }
 
+        /* ------------------------------------------------------------- */
+        /* 100 DAYS OF SCHOOL CHART COMPONENT STYLES                      */
+        /* ------------------------------------------------------------- */
+        .chart-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .chart-stats-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+            width: 100%;
+            max-width: 760px;
+            margin-bottom: 16px;
+        }
+
+        .stat-badge {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #64748b;
+            display: block;
+        }
+
+        .stat-val {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        /* Themes for 100 Days Chart */
+        .chart-pocket-board {
+            padding: 14px;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transition: all 0.25s ease;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .chart-pocket-board.theme-pocket {
+            background-color: #1d4ed8; /* Authentic Blue Pocket Wall */
+            border: 3px solid #1e40af;
+        }
+
+        .chart-pocket-board.theme-dark {
+            background-color: #121212;
+            border: 2px solid #2d3748;
+        }
+
+        .chart-pocket-board.theme-light {
+            background-color: #f1f5f9;
+            border: 2px solid #cbd5e1;
+        }
+
+        /* 10x10 Grid with 3D Flip Perspective */
+        .grid-100 {
+            display: grid;
+            grid-template-columns: repeat(10, minmax(0, 1fr));
+            gap: 6px;
+            width: min(88vw, 680px);
+            height: min(88vw, 680px);
+            perspective: 800px;
+        }
+
+        .cell-flipper {
+            aspect-ratio: 1 / 1;
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cell-flipper.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: clamp(0.75rem, 2.1vw, 1.35rem);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            user-select: none;
+        }
+
+        /* FRONT FACE: Physical Card Filled */
+        .card-front {
+            border: 1px solid rgba(0,0,0,0.12);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        }
+
+        /* White Cards (Default) */
+        .theme-pocket .card-front {
+            background-color: #ffffff;
+            color: #b91c1c; /* Crimson Red Numbers */
+        }
+        /* Red Special Cards (Days 1 to 27) */
+        .theme-pocket .cell-flipper.special-red .card-front {
+            background-color: #dc2626;
+            color: #ffffff;
+        }
+
+        .theme-dark .card-front {
+            background-color: #273549;
+            color: #ffffff;
+            border: 1px solid #3e5069;
+        }
+
+        .theme-light .card-front {
+            background-color: #ffffff;
+            color: #0f172a;
+            border: 1px solid #94a3b8;
+        }
+
+        /* BACK FACE: Pocket/Slot with Clearly Visible Outlined Day Number */
+        .card-back {
+            transform: rotateY(180deg);
+            border-radius: 6px;
+        }
+
+        /* In Pocket Mode: Subtle see-through pocket with clearly readable outlined number */
+        .theme-pocket .card-back {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff; /* Bright white text so it's always readable! */
+            border: 1.5px dashed rgba(255, 255, 255, 0.45);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .theme-dark .card-back {
+            background-color: rgba(255, 255, 255, 0.03);
+            color: #94a3b8;
+            border: 1px dashed rgba(255, 255, 255, 0.25);
+        }
+
+        .theme-light .card-back {
+            background-color: rgba(0, 0, 0, 0.03);
+            color: #64748b;
+            border: 1.5px dashed #94a3b8;
+        }
+
         /* Global Footer */
         footer.app-footer {
             background-color: var(--footer-bg);
@@ -705,9 +863,14 @@
                 text-align: center;
             }
 
-            /* Responsive Table/Card Switch */
             .table-wrap { display: none; }
             .mobile-verb-cards { display: flex; }
+
+            .grid-100 {
+                gap: 3px;
+                width: 93vw;
+                height: 93vw;
+            }
         }
     </style>
 </head>
@@ -719,18 +882,19 @@
         <span>🏆</span>
         <span>Bitew Grammar Quest</span>
     </div>
-    <div class="header-badge">Suite v3.0</div>
+    <div class="header-badge">Suite v3.2</div>
 </header>
 
 <main class="main-content">
     <div class="container">
-        <!-- TOP NAVIGATION (5 TABS) -->
+        <!-- TOP NAVIGATION (6 TABS) -->
         <nav class="main-nav">
             <button class="nav-btn active" onclick="switchView('quest')">🎮 Grammar Quest</button>
             <button class="nav-btn" onclick="switchView('tenses')">📖 Verb Tenses</button>
             <button class="nav-btn" onclick="switchView('irregular')">⚡ Irregular Verbs</button>
             <button class="nav-btn" onclick="switchView('notes-bank')">📝 Notes Sheet</button>
-            <button class="nav-btn" onclick="switchView('practice-lab')">🌟 Junior Practice Lab</button>
+            <button class="nav-btn" onclick="switchView('practice-lab')">🌟 Junior Practice</button>
+            <button class="nav-btn" onclick="switchView('school-chart')">💯 100 Days of School</button>
         </nav>
 
         <!-- VIEW 1: GRAMMAR QUEST -->
@@ -799,7 +963,7 @@
             <div id="tenses-card-container"></div>
         </div>
 
-        <!-- VIEW 3: IRREGULAR VERBS HUB (RESPONSIVE TABLE + MOBILE CARDS) -->
+        <!-- VIEW 3: IRREGULAR VERBS HUB -->
         <div id="view-irregular" class="app-view" style="display: none;">
             <input 
                 type="text" 
@@ -809,7 +973,6 @@
                 onkeyup="searchVerbs()"
             />
             
-            <!-- Desktop Table (Screen >= 681px) -->
             <div class="table-wrap">
                 <table class="desktop-verb-table">
                     <thead>
@@ -826,7 +989,6 @@
                 </table>
             </div>
 
-            <!-- Mobile Adaptive Cards (Screen <= 680px) -->
             <div class="mobile-verb-cards" id="irregular-mobile-cards"></div>
         </div>
 
@@ -846,14 +1008,13 @@
             <div id="notes-list-container"></div>
         </div>
 
-        <!-- VIEW 5: JUNIOR PRACTICE LAB (5 PILLARS: DOODLEENGLISH FRAMEWORK) -->
+        <!-- VIEW 5: JUNIOR PRACTICE LAB (5 PILLARS) -->
         <div id="view-practice-lab" class="app-view" style="display: none;">
             <div style="margin-bottom: 16px;">
                 <h2 style="margin: 0 0 6px 0; color: #1e293b; font-size: 1.3rem;">🌟 Junior English Practice Lab</h2>
                 <p style="margin: 0; font-size: 0.9rem; color: #64748b;">Primary School Curriculum: 5 Core Pillars with kid-friendly feedback.</p>
             </div>
 
-            <!-- Pillar Filter Buttons -->
             <div class="pillar-nav-bar">
                 <button class="pillar-tab active" onclick="filterPillar('all')">✨ All Pillars</button>
                 <button class="pillar-tab" onclick="filterPillar('Reading')">📖 Reading</button>
@@ -865,6 +1026,56 @@
 
             <div id="pillar-exercises-container"></div>
         </div>
+
+        <!-- VIEW 6: 100 DAYS OF SCHOOL INTERACTIVE CHART -->
+        <div id="view-school-chart" class="app-view" style="display: none;">
+            <div class="chart-wrapper">
+                <div style="text-align: center; margin-bottom: 14px;">
+                    <h2 style="margin: 0 0 4px 0; color: #1e293b; font-size: 1.3rem;">💯 100 Days of School Chart</h2>
+                    <p style="margin: 0; font-size: 0.9rem; color: #64748b;">Tap any card to toggle between filled and empty pocket states with sound.</p>
+                </div>
+
+                <!-- Stats Tracker Dashboard -->
+                <div class="chart-stats-dashboard">
+                    <div class="stat-badge">
+                        <span class="stat-label">Current School Day</span>
+                        <span class="stat-val" id="stat-current-day">Day 27</span>
+                    </div>
+                    <div class="stat-badge">
+                        <span class="stat-label">Completed Days</span>
+                        <span class="stat-val" id="stat-completed-count">27 / 100</span>
+                    </div>
+                    <div class="stat-badge">
+                        <span class="stat-label">Days to 100th Day</span>
+                        <span class="stat-val" id="stat-remaining-count">73 Days</span>
+                    </div>
+                </div>
+
+                <!-- Chart Controls -->
+                <div class="controls-panel" style="width: 100%; max-width: 760px; margin-bottom: 16px;">
+                    <div class="control-group">
+                        <label for="chartThemeSelect">🎨 Chart Theme:</label>
+                        <select id="chartThemeSelect" onchange="changeChartTheme(this.value)">
+                            <option value="theme-pocket" selected>Classroom Pocket (Blue/Red/White)</option>
+                            <option value="theme-dark">Dark Minimalist</option>
+                            <option value="theme-light">Classroom Light</option>
+                        </select>
+                    </div>
+                    <div class="control-group" style="justify-content: flex-end;">
+                        <div style="display: flex; gap: 8px;">
+                            <button class="action-btn" style="background:#2563eb; flex:1;" onclick="setAllSchoolDays(true)">Show All</button>
+                            <button class="action-btn" style="background:#64748b; flex:1;" onclick="setAllSchoolDays(false)">Clear All</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 10x10 Chart Canvas -->
+                <div class="chart-pocket-board theme-pocket" id="school-board">
+                    <div class="grid-100" id="school-grid-100"></div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </main>
 
@@ -876,6 +1087,7 @@
         <a onclick="switchView('irregular')">Irregular Verbs</a>
         <a onclick="switchView('notes-bank')">Notes Sheet</a>
         <a onclick="switchView('practice-lab')">Junior Lab</a>
+        <a onclick="switchView('school-chart')">100 Days Chart</a>
     </div>
     <div>Bitew Grammar Quest &copy; 2026 • Dedicated Educational Grammar Suite</div>
 </footer>
@@ -896,7 +1108,140 @@
 
 <script>
     // -------------------------------------------------------------
-    // 5-PILLAR JUNIOR PRACTICE LAB CURRICULUM (STRICT JSON SPEC)
+    // WEB AUDIO API SYNTHESIZER (POCKET TAP / FLIP SOUND EFFECTS)
+    // -------------------------------------------------------------
+    let audioCtx = null;
+    function playPocketCardSound(isInserting) {
+        try {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'sine';
+            const startTime = audioCtx.currentTime;
+
+            if (isInserting) {
+                // Card inserted: Pleasant crisp chime
+                osc.frequency.setValueAtTime(320, startTime);
+                osc.frequency.exponentialRampToValueAtTime(540, startTime + 0.08);
+                gain.gain.setValueAtTime(0.2, startTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.09);
+            } else {
+                // Card removed / flipped: Soft paper slide thud
+                osc.frequency.setValueAtTime(240, startTime);
+                osc.frequency.exponentialRampToValueAtTime(120, startTime + 0.07);
+                gain.gain.setValueAtTime(0.18, startTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.08);
+            }
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(startTime);
+            osc.stop(startTime + 0.1);
+        } catch (e) {
+            // Audio policy fallback
+        }
+    }
+
+    // -------------------------------------------------------------
+    // 100 DAYS OF SCHOOL CONTROLLER
+    // -------------------------------------------------------------
+    const SCHOOL_DAYS_KEY = 'school_days_chart_data_v2';
+    const SCHOOL_THEME_KEY = 'school_days_theme_choice_v2';
+    let schoolDaysState = JSON.parse(localStorage.getItem(SCHOOL_DAYS_KEY)) || {};
+
+    function initSchoolChart() {
+        const gridContainer = document.getElementById('school-grid-100');
+        gridContainer.innerHTML = '';
+
+        for (let i = 1; i <= 100; i++) {
+            const flipper = document.createElement('div');
+            flipper.className = 'cell-flipper';
+            flipper.dataset.day = i;
+
+            // Days 1 to 27 are marked special red in pocket theme
+            if (i <= 27) {
+                flipper.classList.add('special-red');
+            }
+
+            // Evaluation: true = card is present; false = flipped/empty pocket
+            // Default setup: days 1 to 27 filled, rest filled unless saved
+            const isCardPresent = schoolDaysState[i] !== undefined ? schoolDaysState[i] : true;
+            if (!isCardPresent) {
+                flipper.classList.add('is-flipped');
+            }
+
+            // FRONT FACE: Full cardboard card
+            const front = document.createElement('div');
+            front.className = 'card-face card-front';
+            front.innerText = i;
+
+            // BACK FACE: Open pocket with clear, visible outlined number
+            const back = document.createElement('div');
+            back.className = 'card-face card-back';
+            back.innerText = i;
+
+            flipper.appendChild(front);
+            flipper.appendChild(back);
+
+            flipper.addEventListener('click', () => toggleSchoolDay(i, flipper));
+            gridContainer.appendChild(flipper);
+        }
+
+        updateSchoolTrackerStats();
+    }
+
+    function toggleSchoolDay(dayNum, flipperElem) {
+        const isFlipped = flipperElem.classList.toggle('is-flipped');
+        const cardNowPresent = !isFlipped;
+        schoolDaysState[dayNum] = cardNowPresent;
+        localStorage.setItem(SCHOOL_DAYS_KEY, JSON.stringify(schoolDaysState));
+
+        playPocketCardSound(cardNowPresent);
+        updateSchoolTrackerStats();
+    }
+
+    function updateSchoolTrackerStats() {
+        let totalCompleted = 0;
+        let highestDay = 0;
+
+        for (let i = 1; i <= 100; i++) {
+            const isPresent = schoolDaysState[i] !== undefined ? schoolDaysState[i] : true;
+            if (isPresent) {
+                totalCompleted++;
+                if (i > highestDay) highestDay = i;
+            }
+        }
+
+        document.getElementById('stat-current-day').innerText = highestDay > 0 ? `Day ${highestDay}` : 'Day 0';
+        document.getElementById('stat-completed-count').innerText = `${totalCompleted} / 100`;
+        document.getElementById('stat-remaining-count').innerText = `${100 - totalCompleted} Days`;
+    }
+
+    function setAllSchoolDays(activeState) {
+        for (let i = 1; i <= 100; i++) {
+            schoolDaysState[i] = activeState;
+        }
+        localStorage.setItem(SCHOOL_DAYS_KEY, JSON.stringify(schoolDaysState));
+        initSchoolChart();
+        playPocketCardSound(activeState);
+    }
+
+    function changeChartTheme(themeName) {
+        const board = document.getElementById('school-board');
+        board.className = 'chart-pocket-board ' + themeName;
+        localStorage.setItem(SCHOOL_THEME_KEY, themeName);
+    }
+
+    // -------------------------------------------------------------
+    // JUNIOR PRACTICE LAB DATABASE
     // -------------------------------------------------------------
     const juniorPillarsDatabase = [
         {
@@ -1522,12 +1867,12 @@
     const TIME_LIMIT = 45;
     let activeModalVerb = null;
 
-    // View Navigation
+    // View Navigation (6 Views)
     function switchView(viewName) {
         document.querySelectorAll('.app-view').forEach(v => v.style.display = 'none');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
 
-        const btnMap = { 'quest': 0, 'tenses': 1, 'irregular': 2, 'notes-bank': 3, 'practice-lab': 4 };
+        const btnMap = { 'quest': 0, 'tenses': 1, 'irregular': 2, 'notes-bank': 3, 'practice-lab': 4, 'school-chart': 5 };
         if (btnMap[viewName] !== undefined) {
             document.querySelectorAll('.nav-btn')[btnMap[viewName]].classList.add('active');
         }
@@ -1546,6 +1891,9 @@
         } else if (viewName === 'practice-lab') {
             document.getElementById('view-practice-lab').style.display = 'block';
             renderPillarsLab('all');
+        } else if (viewName === 'school-chart') {
+            document.getElementById('view-school-chart').style.display = 'block';
+            initSchoolChart();
         }
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1739,9 +2087,8 @@
         `).join('');
     }
 
-    // Irregular Verbs Hub Dual Renderer (Desktop Table + Mobile Cards)
+    // Irregular Verbs Hub Dual Renderer
     function renderIrregularViews(list) {
-        // Desktop Table
         const tbody = document.getElementById('irregular-table-body');
         tbody.innerHTML = list.map(v => `
             <tr>
@@ -1756,7 +2103,6 @@
             </tr>
         `).join('');
 
-        // Mobile Responsive Cards
         const mContainer = document.getElementById('irregular-mobile-cards');
         mContainer.innerHTML = list.map(v => `
             <div class="verb-m-card">
@@ -1864,9 +2210,7 @@
         renderNotesBank(filtered);
     }
 
-    // -------------------------------------------------------------
-    // JUNIOR PRACTICE LAB RENDERER (INDEX-BASED COLLISION FIX)
-    // -------------------------------------------------------------
+    // Junior Practice Lab Renderer
     function filterPillar(pillarName) {
         document.querySelectorAll('.pillar-tab').forEach(t => t.classList.remove('active'));
         if (event && event.target) event.target.classList.add('active');
