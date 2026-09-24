@@ -702,7 +702,7 @@
         }
 
         .chart-pocket-board.theme-pocket {
-            background-color: #1d4ed8; /* Blue Pocket Wall */
+            background-color: #1d4ed8;
             border: 3px solid #1e40af;
         }
 
@@ -753,13 +753,13 @@
             user-select: none;
         }
 
-        /* FRONT FACE: Physical Card Inserted (Active) */
+        /* FRONT FACE: Active card inserted */
         .card-front {
             border: 1px solid rgba(0,0,0,0.12);
             box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
 
-        /* In Pocket Chart Mode: ALL ACTIVE CARDS ARE CRIMSON RED ALL THE WAY TO 100 */
+        /* In Pocket Chart Mode: ALL ACTIVE CARDS ARE CRIMSON RED 1-100 */
         .theme-pocket .card-front {
             background-color: #dc2626 !important;
             color: #ffffff !important;
@@ -786,7 +786,7 @@
 
         .theme-pocket .card-back {
             background-color: rgba(255, 255, 255, 0.08);
-            color: #ffffff !important; /* Clear bright number so it is never covered or hidden */
+            color: #ffffff !important;
             border: 1.5px dashed rgba(255, 255, 255, 0.45);
             text-shadow: 0 1px 3px rgba(0,0,0,0.6);
         }
@@ -911,7 +911,7 @@
         <span>🏆</span>
         <span>Bitew Grammar Quest</span>
     </div>
-    <div class="header-badge">Suite v3.3</div>
+    <div class="header-badge">Suite v3.4</div>
 </header>
 
 <main class="main-content">
@@ -1068,15 +1068,15 @@
                 <div class="chart-stats-dashboard">
                     <div class="stat-badge">
                         <span class="stat-label">Current School Day</span>
-                        <span class="stat-val" id="stat-current-day">Day 29</span>
+                        <span class="stat-val" id="stat-current-day">Day 30</span>
                     </div>
                     <div class="stat-badge">
                         <span class="stat-label">Days Completed</span>
-                        <span class="stat-val" id="stat-completed-count">28 / 100</span>
+                        <span class="stat-val" id="stat-completed-count">30 / 100</span>
                     </div>
                     <div class="stat-badge">
                         <span class="stat-label">Days to 100th Day</span>
-                        <span class="stat-val" id="stat-remaining-count">71 Days</span>
+                        <span class="stat-val" id="stat-remaining-count">70 Days</span>
                     </div>
                 </div>
 
@@ -1085,12 +1085,12 @@
                     <div class="date-banner-left">
                         <span style="font-size: 1.5rem;">📅</span>
                         <div>
-                            <div class="date-banner-title" id="banner-day-number">School Day 29</div>
-                            <div class="date-banner-sub" id="banner-full-date">Wednesday, September 23, 2026</div>
+                            <div class="date-banner-title" id="banner-day-number">School Day 30</div>
+                            <div class="date-banner-sub" id="banner-full-date">Thursday, September 24, 2026</div>
                         </div>
                     </div>
                     <div>
-                        <span id="banner-status-badge" style="background: #2563eb; color: #fff; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 0.85rem;">Today's Session</span>
+                        <span id="banner-status-badge" style="background: #059669; color: #fff; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 0.85rem;">Completed ✓</span>
                     </div>
                 </div>
 
@@ -1170,13 +1170,11 @@
             const startTime = audioCtx.currentTime;
 
             if (isInserting) {
-                // Card inserted: Crisp uplifting chime
                 osc.frequency.setValueAtTime(320, startTime);
                 osc.frequency.exponentialRampToValueAtTime(540, startTime + 0.08);
                 gain.gain.setValueAtTime(0.2, startTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.09);
             } else {
-                // Card removed: Soft paper slide tone
                 osc.frequency.setValueAtTime(240, startTime);
                 osc.frequency.exponentialRampToValueAtTime(120, startTime + 0.07);
                 gain.gain.setValueAtTime(0.18, startTime);
@@ -1202,9 +1200,8 @@
 
     // Anchor Date: Day 29 = Wednesday, September 23, 2026
     const ANCHOR_DAY = 29;
-    const ANCHOR_DATE = new Date(2026, 8, 23); // Months are 0-indexed (8 = September)
+    const ANCHOR_DATE = new Date(2026, 8, 23); // 8 = September
 
-    // Calculate calendar dates skipping weekends
     function getSchoolDayCalendarDate(dayNumber) {
         let diff = dayNumber - ANCHOR_DAY;
         let currentDate = new Date(ANCHOR_DATE);
@@ -1214,7 +1211,6 @@
         while (count > 0) {
             currentDate.setDate(currentDate.getDate() + step);
             const dayOfWeek = currentDate.getDay();
-            // 0 = Sunday, 6 = Saturday (Skip weekends)
             if (dayOfWeek !== 0 && dayOfWeek !== 6) {
                 count--;
             }
@@ -1224,12 +1220,11 @@
         return currentDate.toLocaleDateString('en-US', options);
     }
 
-    // Initialize 28 completed days by default for Melkam if first visit
     function ensureInitialSchoolDays() {
         if (!schoolDaysState) {
             schoolDaysState = {};
             for (let i = 1; i <= 100; i++) {
-                schoolDaysState[i] = (i <= 28); // Days 1 to 28 completed
+                schoolDaysState[i] = (i <= 30); // Up to Day 30 completed
             }
             localStorage.setItem(SCHOOL_DAYS_KEY, JSON.stringify(schoolDaysState));
         }
@@ -1245,8 +1240,7 @@
             flipper.className = 'cell-flipper';
             flipper.dataset.day = i;
 
-            // In our system: false = slot is flipped/empty; true = active red card inserted
-            const isCompleted = schoolDaysState[i] !== undefined ? schoolDaysState[i] : false;
+            const isCompleted = schoolDaysState[i] === true;
             if (!isCompleted) {
                 flipper.classList.add('is-flipped');
             }
@@ -1269,7 +1263,13 @@
         }
 
         updateSchoolTrackerStats();
-        inspectDayDate(29); // Default banner inspects Day 29 (Today)
+
+        // Default inspect the highest completed day (e.g. Day 30)
+        let highest = 0;
+        for (let i = 1; i <= 100; i++) {
+            if (schoolDaysState[i] === true && i > highest) highest = i;
+        }
+        inspectDayDate(highest > 0 ? highest : 1);
     }
 
     function toggleSchoolDay(dayNum, flipperElem) {
@@ -1291,8 +1291,13 @@
         const isCompleted = schoolDaysState[dayNum] === true;
         const statusBadge = document.getElementById('banner-status-badge');
 
-        if (dayNum === 29) {
-            statusBadge.innerText = isCompleted ? "Day 29 Marked Done" : "Today's Session (Day 29)";
+        let highest = 0;
+        for (let i = 1; i <= 100; i++) {
+            if (schoolDaysState[i] === true && i > highest) highest = i;
+        }
+
+        if (dayNum === highest) {
+            statusBadge.innerText = isCompleted ? `Day ${dayNum} Marked Done` : `Current Day ${dayNum}`;
             statusBadge.style.background = isCompleted ? "#059669" : "#2563eb";
         } else if (isCompleted) {
             statusBadge.innerText = "Completed ✓";
@@ -1303,6 +1308,7 @@
         }
     }
 
+    // Dynamic School Day Tracker Fix
     function updateSchoolTrackerStats() {
         let totalCompleted = 0;
         let highestDay = 0;
@@ -1314,7 +1320,8 @@
             }
         }
 
-        document.getElementById('stat-current-day').innerText = `Day 29`;
+        // Dynamically display the highest completed day (e.g. Day 30)
+        document.getElementById('stat-current-day').innerText = highestDay > 0 ? `Day ${highestDay}` : 'Day 0';
         document.getElementById('stat-completed-count').innerText = `${totalCompleted} / 100`;
         document.getElementById('stat-remaining-count').innerText = `${100 - totalCompleted} Days`;
     }
@@ -1961,7 +1968,6 @@
     const TIME_LIMIT = 45;
     let activeModalVerb = null;
 
-    // View Navigation (6 Views)
     function switchView(viewName) {
         document.querySelectorAll('.app-view').forEach(v => v.style.display = 'none');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -1993,7 +1999,6 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Quest Logic
     function setTier(tier) {
         currentTier = tier;
         document.querySelectorAll('.tier-btn').forEach(btn => btn.classList.remove('active'));
@@ -2146,7 +2151,6 @@
         hintBox.style.display = 'block';
     }
 
-    // Verb Tenses View Renderer
     function renderTenseCategory(catKey) {
         document.querySelectorAll('.tense-tab').forEach(t => t.classList.remove('active'));
         if (event && event.target && event.target.classList.contains('tense-tab')) {
@@ -2181,7 +2185,6 @@
         `).join('');
     }
 
-    // Irregular Verbs Hub Dual Renderer
     function renderIrregularViews(list) {
         const tbody = document.getElementById('irregular-table-body');
         tbody.innerHTML = list.map(v => `
@@ -2267,7 +2270,6 @@
         }
     }
 
-    // Direct Notes Study Sheet Functions
     function renderNotesBank(list) {
         const container = document.getElementById('notes-list-container');
         if (!list || list.length === 0) {
@@ -2304,7 +2306,6 @@
         renderNotesBank(filtered);
     }
 
-    // Junior Practice Lab Renderer
     function filterPillar(pillarName) {
         document.querySelectorAll('.pillar-tab').forEach(t => t.classList.remove('active'));
         if (event && event.target) event.target.classList.add('active');
@@ -2377,7 +2378,6 @@
         }
     }
 
-    // Event Bindings
     document.getElementById('topic-select').addEventListener('change', (e) => {
         currentTopic = e.target.value;
         resetGame();
@@ -2395,7 +2395,6 @@
         loadQuestion();
     });
 
-    // Start default view on page load
     resetGame();
 </script>
 </body>
